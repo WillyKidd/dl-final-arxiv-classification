@@ -1,0 +1,4 @@
+# tokenizer config
+TOK_MAX_VOCAB_SIZE=10000
+TOK_MIN_FREQ = 2
+TOK_MAX_LEN = 1024
