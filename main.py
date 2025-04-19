@@ -1,10 +1,10 @@
-from tokenizer import Tokenizer
 import pandas as pd
 import torch
 
+from tokenizer import Tokenizer
 
 df = pd.read_csv("data/arxiv100.csv")
-texts = (df['title'] + ' ' + df['abstract']).tolist()
+texts = (df["title"] + " " + df["abstract"]).tolist()
 
 tokenizer = Tokenizer()
 tokenizer.build_vocab(texts)

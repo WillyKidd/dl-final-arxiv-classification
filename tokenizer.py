@@ -1,7 +1,10 @@
+from collections import Counter
+
 from torchtext.data.utils import get_tokenizer
 from torchtext.vocab import Vocab
-from collections import Counter
+
 from config import *
+
 
 class Tokenizer:
     def __init__(self):
@@ -18,7 +21,9 @@ class Tokenizer:
             counter.update(tokens)
 
         # apply min_freq
-        filtered_tokens = {tok: freq for tok, freq in counter.items() if freq >= TOK_MIN_FREQ}
+        filtered_tokens = {
+            tok: freq for tok, freq in counter.items() if freq >= TOK_MIN_FREQ
+        }
         specials = [self.pad_token, self.unk_token]
 
         # sort and truncate vocab
@@ -34,10 +39,14 @@ class Tokenizer:
 
     def encode(self, text):
         tokens = self.tokenizer(text)
-        unpadded_tokens = [self.vocab[token] if token in self.vocab.stoi else self.unk_index for token in tokens]
+        unpadded_tokens = [
+            self.vocab[token] if token in self.vocab.stoi else self.unk_index
+            for token in tokens
+        ]
         # pad to TOK_MAX_LEN
-        return unpadded_tokens[:TOK_MAX_LEN] + [self.vocab[self.pad_token]] * max(0, TOK_MAX_LEN - len(unpadded_tokens))
+        return unpadded_tokens[:TOK_MAX_LEN] + [self.vocab[self.pad_token]] * max(
+            0, TOK_MAX_LEN - len(unpadded_tokens)
+        )
 
     def decode(self, token_ids):
         return [self.vocab.itos[i] for i in token_ids]
-

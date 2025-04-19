@@ -1,5 +1,6 @@
 import os
 import zipfile
+
 import requests
 
 url = "https://github.com/ashfarhangi/Protoformer/raw/refs/heads/main/data/ArXiv-10.zip"
@@ -15,7 +16,7 @@ with open(zip_path, "wb") as f:
 print("Download complete.")
 
 print(f"Extracting to ./{extract_dir}...")
-with zipfile.ZipFile(zip_path, 'r') as zip_ref:
+with zipfile.ZipFile(zip_path, "r") as zip_ref:
     zip_ref.extractall(extract_dir)
 print("Extraction complete.")
 
