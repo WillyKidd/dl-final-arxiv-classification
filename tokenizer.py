@@ -39,14 +39,16 @@ class Tokenizer:
 
     def encode(self, text):
         tokens = self.tokenizer(text)
-        unpadded_tokens = [
+        return [
             self.vocab[token] if token in self.vocab.stoi else self.unk_index
             for token in tokens
         ]
-        # pad to TOK_MAX_LEN
-        return unpadded_tokens[:TOK_MAX_LEN] + [self.vocab[self.pad_token]] * max(
-            0, TOK_MAX_LEN - len(unpadded_tokens)
-        )
 
     def decode(self, token_ids):
         return [self.vocab.itos[i] for i in token_ids]
+
+    def pad_batch(self, seq_batch):
+        return [
+            seq[:TOK_LEN] + [self.vocab[self.pad_token]] * max(0, TOK_LEN - len(seq))
+            for seq in seq_batch
+        ]
