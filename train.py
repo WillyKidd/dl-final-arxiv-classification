@@ -15,8 +15,12 @@ dataset = ArxivDataset(TRAIN_PATH)
 dataloader = DataLoader(dataset, batch_size=BATCH_SIZE, shuffle=True)
 
 model = ArxivClassifier(
-    vocab_size=len(dataset.tokenizer.vocab),
-    num_classes=len(dataset.labels),
+    len(dataset.tokenizer.vocab),
+    len(set(dataset.labels)),
+    DIM_MODEL,
+    NUM_HEADS,
+    NUM_LAYERS,
+    DIM_FFN,
 ).to(device)
 
 criterion = nn.CrossEntropyLoss()

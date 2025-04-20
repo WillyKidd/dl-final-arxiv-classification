@@ -11,7 +11,7 @@ class ArxivClassifier(nn.Module):
         num_heads=4,
         num_layers=2,
         dim_ffn=256,
-        max_len=512,
+        max_len=1024,
         dropout=0.1,
     ):
         super().__init__()
