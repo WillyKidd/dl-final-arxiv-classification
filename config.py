@@ -16,3 +16,4 @@ LEARNING_RATE = 3e-4
 
 # PATHS
 TRAIN_PATH = "data/train.csv"
+TEST_PATH = "data/test.csv"
