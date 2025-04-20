@@ -1,4 +1,18 @@
-# tokenizer config
+# tokenizer
 TOK_MAX_VOCAB_SIZE = 10000
 TOK_MIN_FREQ = 2
 TOK_LEN = 1024
+
+# model
+DIM_MODEL = 128
+NUM_HEADS = 4
+NUM_LAYERS = 2
+DIM_FFN = 256
+
+# train
+BATCH_SIZE = 32
+NUM_EPOCHS = 5
+LEARNING_RATE = 3e-4
+
+# PATHS
+CSV_PATH = "data/arxiv100.csv"
