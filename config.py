@@ -12,7 +12,7 @@ DIM_FFN = 256
 # train
 BATCH_SIZE = 32
 NUM_EPOCHS = 5
-LEARNING_RATE = 3e-4
+LEARNING_RATE = 1e-4
 
 # PATHS
 TRAIN_PATH = "data/train.csv"
