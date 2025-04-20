@@ -59,6 +59,4 @@ for epoch in range(NUM_EPOCHS):
             loss=running_loss / (total / BATCH_SIZE), acc=100.0 * correct / total
         )
 
-# 8. Save model and label map
 torch.save(model.state_dict(), "model.pt")
-print("✅ Training complete and model saved.")
