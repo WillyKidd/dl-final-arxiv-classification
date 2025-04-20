@@ -15,4 +15,4 @@ NUM_EPOCHS = 5
 LEARNING_RATE = 3e-4
 
 # PATHS
-CSV_PATH = "data/arxiv100.csv"
+TRAIN_PATH = "data/train.csv"

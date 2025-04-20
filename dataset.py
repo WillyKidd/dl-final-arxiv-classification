@@ -10,12 +10,8 @@ class ArxivDataset(Dataset):
         self.df = pd.read_csv(csv_path)
         self.tokenizer = tokenizer
 
-        labels = sorted(self.df["label"].unique())
-        self.label2id = {label: i for i, label in enumerate(labels)}
-        self.id2label = {i: label for label, i in self.label2id.items()}
-
         self.texts = (self.df["title"] + " " + self.df["abstract"]).tolist()
-        self.labels = [self.label2id[label] for label in self.df["label"]]
+        self.labels = self.df["label_id"].tolist()
 
         self.encoded = [tokenizer.encode(text) for text in self.texts]
         self.padded = tokenizer.pad_batch(self.encoded)

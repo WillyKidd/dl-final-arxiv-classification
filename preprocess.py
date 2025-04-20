@@ -30,7 +30,7 @@ def download():
     print("Extracting...")
     with zipfile.ZipFile(zip_path, "r") as zip_ref:
         zip_ref.extractall(DATA_DIR)
-    
+
     os.remove(zip_path)
 
 
@@ -52,7 +52,6 @@ def preprocess_and_split(
     id2label = {i: label for label, i in label2id.items()}
 
     df["label_id"] = df["label"].map(label2id)
-    df["text"] = df["title"] + " " + df["abstract"]
 
     train_df, temp_df = train_test_split(
         df, train_size=train_ratio, stratify=df["label_id"], random_state=42
@@ -64,7 +63,7 @@ def preprocess_and_split(
         random_state=42,
     )
 
-    cols_to_save = ["text", "label", "label_id"]
+    cols_to_save = ["title", "abstract", "label", "label_id"]
     train_df[cols_to_save].to_csv(f"{DATA_DIR}/train.csv", index=False)
     val_df[cols_to_save].to_csv(f"{DATA_DIR}/val.csv", index=False)
     test_df[cols_to_save].to_csv(f"{DATA_DIR}/test.csv", index=False)

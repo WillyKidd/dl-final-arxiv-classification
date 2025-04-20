@@ -12,7 +12,7 @@ from tokenizer import Tokenizer
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-df = pd.read_csv(CSV_PATH)
+df = pd.read_csv(TRAIN_PATH)
 texts = (df["title"] + " " + df["abstract"]).tolist()
 labels = sorted(df["label"].unique())
 
@@ -21,7 +21,7 @@ tokenizer.build_vocab(texts)
 
 NUM_CLASSES = len(labels)
 
-dataset = ArxivDataset(CSV_PATH, tokenizer)
+dataset = ArxivDataset(TRAIN_PATH, tokenizer)
 dataloader = DataLoader(dataset, batch_size=BATCH_SIZE, shuffle=True)
 
 model = ArxivClassifier(
