@@ -14,6 +14,7 @@ class Tokenizer:
         self.vocab = None
 
     def build_vocab(self, texts):
+        print("Tokenizer buidling vocab")
         # counts token frequencies
         counter = Counter()
         for text in texts:

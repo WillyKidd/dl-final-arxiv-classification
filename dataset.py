@@ -6,15 +6,17 @@ from tokenizer import Tokenizer
 
 
 class ArxivDataset(Dataset):
-    def __init__(self, csv_path: str, tokenizer: Tokenizer):
+    def __init__(self, csv_path: str):
         self.df = pd.read_csv(csv_path)
-        self.tokenizer = tokenizer
 
         self.texts = (self.df["title"] + " " + self.df["abstract"]).tolist()
         self.labels = self.df["label_id"].tolist()
 
-        self.encoded = [tokenizer.encode(text) for text in self.texts]
-        self.padded = tokenizer.pad_batch(self.encoded)
+        self.tokenizer = Tokenizer()
+        self.tokenizer.build_vocab(self.texts)
+
+        encoded = [self.tokenizer.encode(text) for text in self.texts]
+        self.padded = self.tokenizer.pad_batch(encoded)
 
     def __len__(self):
         return len(self.padded)

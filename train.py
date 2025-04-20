@@ -8,25 +8,15 @@ from tqdm import tqdm
 from config import *
 from dataset import ArxivDataset
 from model import ArxivClassifier
-from tokenizer import Tokenizer
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-df = pd.read_csv(TRAIN_PATH)
-texts = (df["title"] + " " + df["abstract"]).tolist()
-labels = sorted(df["label"].unique())
-
-tokenizer = Tokenizer()
-tokenizer.build_vocab(texts)
-
-NUM_CLASSES = len(labels)
-
-dataset = ArxivDataset(TRAIN_PATH, tokenizer)
+dataset = ArxivDataset(TRAIN_PATH)
 dataloader = DataLoader(dataset, batch_size=BATCH_SIZE, shuffle=True)
 
 model = ArxivClassifier(
-    vocab_size=len(tokenizer.vocab),
-    num_classes=NUM_CLASSES,
+    vocab_size=len(dataset.tokenizer.vocab),
+    num_classes=len(dataset.labels),
 ).to(device)
 
 criterion = nn.CrossEntropyLoss()
