@@ -21,7 +21,7 @@ class Tokenizer:
             df = pd.read_csv(ALL_PATH)
             texts = (df["title"] + " " + df["abstract"]).tolist()
             self._build_vocab(texts)
-            self._save_vocab
+            self._save_vocab()
 
     def _load_vocab(self):
         with open(TOK_SAVE_PATH, "rb") as f:
