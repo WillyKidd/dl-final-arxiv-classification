@@ -19,8 +19,12 @@ test_dataset.padded = test_dataset.tokenizer.pad_batch(test_dataset.encoded)
 test_loader = DataLoader(test_dataset, batch_size=BATCH_SIZE)
 
 model = ArxivClassifier(
-    vocab_size=len(train_dataset.tokenizer.vocab),
-    num_classes=len(train_dataset.labels),
+    len(train_dataset.tokenizer.vocab),
+    len(set(train_dataset.labels)),
+    DIM_MODEL,
+    NUM_HEADS,
+    NUM_LAYERS,
+    DIM_FFN,
 ).to(device)
 
 model.load_state_dict(torch.load("model.pt"))
