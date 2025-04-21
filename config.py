@@ -2,6 +2,7 @@
 TOK_MAX_VOCAB_SIZE = 10000
 TOK_MIN_FREQ = 2
 TOK_LEN = 1024
+TOK_SAVE_PATH = "data/vocab.pkl"
 
 # model
 DIM_MODEL = 128
@@ -15,5 +16,6 @@ NUM_EPOCHS = 5
 LEARNING_RATE = 1e-3
 
 # PATHS
+ALL_PATH = "data/arxiv100.csv"
 TRAIN_PATH = "data/train.csv"
 TEST_PATH = "data/test.csv"

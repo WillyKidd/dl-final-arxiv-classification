@@ -1,5 +1,8 @@
+import os
+import pickle
 from collections import Counter
 
+import pandas as pd
 from torchtext.data.utils import get_tokenizer
 from torchtext.vocab import Vocab
 
@@ -12,8 +15,27 @@ class Tokenizer:
         self.pad_token = "<pad>"
         self.unk_token = "<unk>"
         self.vocab = None
+        if os.path.exists(TOK_SAVE_PATH):
+            self._load_vocab()
+        else:
+            df = pd.read_csv(ALL_PATH)
+            texts = (df["title"] + " " + df["abstract"]).tolist()
+            self._build_vocab(texts)
+            self._save_vocab
 
-    def build_vocab(self, texts):
+    def _load_vocab(self):
+        with open(TOK_SAVE_PATH, "rb") as f:
+            self.vocab = pickle.load(f)
+        self.pad_index = self.vocab[self.pad_token]
+        self.unk_index = self.vocab[self.unk_token]
+        print("Tokenizer vocab loaded")
+
+    def _save_vocab(self):
+        with open(TOK_SAVE_PATH, "wb") as f:
+            pickle.dump(self.vocab, f)
+        print("Tokenizer vocab saved")
+
+    def _build_vocab(self, texts):
         print("Tokenizer buidling vocab")
         # counts token frequencies
         counter = Counter()

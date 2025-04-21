@@ -13,7 +13,6 @@ class ArxivDataset(Dataset):
         self.labels = self.df["label_id"].tolist()
 
         self.tokenizer = Tokenizer()
-        self.tokenizer.build_vocab(self.texts)
 
         encoded = [self.tokenizer.encode(text) for text in self.texts]
         self.padded = self.tokenizer.pad_batch(encoded)

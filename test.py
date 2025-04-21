@@ -9,18 +9,12 @@ from model import ArxivClassifier
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-train_dataset = ArxivDataset(TRAIN_PATH)
 test_dataset = ArxivDataset(TEST_PATH)
-test_dataset.tokenizer = train_dataset.tokenizer
-test_dataset.encoded = [
-    test_dataset.tokenizer.encode(text) for text in test_dataset.texts
-]
-test_dataset.padded = test_dataset.tokenizer.pad_batch(test_dataset.encoded)
 test_loader = DataLoader(test_dataset, batch_size=BATCH_SIZE)
 
 model = ArxivClassifier(
-    len(train_dataset.tokenizer.vocab),
-    len(set(train_dataset.labels)),
+    len(test_dataset.tokenizer.vocab),
+    len(set(test_dataset.labels)),
     DIM_MODEL,
     NUM_HEADS,
     NUM_LAYERS,
