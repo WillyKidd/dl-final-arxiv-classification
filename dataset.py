@@ -31,8 +31,13 @@ class ArxivDataset(Dataset):
         self.padded_titles = self.tokenizer.pad_batch(encoded_titles)
         self.padded_abstracts = self.tokenizer.pad_batch(encoded_abstracts)
 
+    # need to use padded titles instead of padded since that does not exist any more
     def __len__(self):
-        return len(self.padded)
+        return len(self.padded_titles)
+
+    # Uncomment if you want to encode title and abstract together
+    # def __len__(self):
+    #     return len(self.padded)
 
     def __getitem__(self, idx):
         # Uncomment if you want to encode title and abstract together
