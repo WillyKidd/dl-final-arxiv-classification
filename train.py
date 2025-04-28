@@ -86,6 +86,7 @@ for epoch in range(NUM_EPOCHS):
             all_labels.extend(labels.cpu().tolist())
 
     testing_accuracy = 100.0 * correct / total
+    print(f"Test Accuracy: {testing_accuracy:.2f}%")
 
     results.append([epoch + 1, training_accuracy, testing_accuracy])
 
