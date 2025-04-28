@@ -30,11 +30,19 @@ all_labels = []
 
 with torch.no_grad():
     for batch in tqdm(test_loader, desc="Evaluating"):
-        input_ids = batch["input_ids"].to(device)
-        attention_mask = batch["attention_mask"].to(device)
+        # Uncomment if doing joint encodings
+        #input_ids = batch["input_ids"].to(device)
+        #attention_mask = batch["attention_mask"].to(device)
+        title_ids = batch["title_ids"].to(device)
+        abstract_ids = batch["abstract_ids"].to(device)
+        attention_mask_title = batch["attention_mask_title"].to(device)
+        attention_mask_abstract = batch["attention_mask_abstract"].to(device)
         labels = batch["label"].to(device)
 
-        logits = model(input_ids, attention_mask)
+        # Same here as well if doing joint encodings
+        #logits = model(input_ids, attention_mask)
+        logits = model(title_ids, attention_mask_title, abstract_ids, attention_mask_abstract)
+
         preds = logits.argmax(dim=1)
 
         correct += (preds == labels).sum().item()

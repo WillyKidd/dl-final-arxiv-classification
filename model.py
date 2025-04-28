@@ -27,10 +27,13 @@ class ArxivClassifier(nn.Module):
         )
         self.transformer_encoder = nn.TransformerEncoder(encoder_layer, num_layers)
 
-        self.classifier = nn.Linear(dim_model, num_classes)
+        # Remove the * 2 if you want to go back to joint encodings
+        self.classifier = nn.Linear(dim_model * 2, num_classes)
 
-    def forward(self, input_ids, attention_mask):
-        batch_size, seq_len = input_ids.size()
+    # If doing joint encoding, change arguments to: self, input_ids, attention_mask
+    def forward(self, title_ids, attention_mask_title, abstract_ids, attention_mask_abstract):
+        # Uncomment if you want to do joint encodings
+        """batch_size, seq_len = input_ids.size()
         position_ids = (
             torch.arange(seq_len, device=input_ids.device)
             .unsqueeze(0)
@@ -47,4 +50,28 @@ class ArxivClassifier(nn.Module):
         x = x[:, 0]
 
         logits = self.classifier(x)
+        return logits"""
+
+        # Encoding the titles
+        batch_size, title_length = title_ids.size()
+        pos_ids_title = (torch.arange(title_length, device=title_ids.device).unsqueeze(0).expand(batch_size, title_length))
+        pos_ids_title = pos_ids_title.clamp(0, self.pos_embedding.num_embeddings - 1)
+
+        title_x = self.token_embedding(title_ids) + self.pos_embedding(pos_ids_title)
+        title_mask = attention_mask_title == 0
+        title_encoded = self.transformer_encoder(title_x, src_key_padding_mask=title_mask)
+        title_encoded = title_encoded[:, 0]
+
+        # Encoding the abstract
+        batch_size, abstract_len = abstract_ids.size()
+        pos_ids_abstract = (torch.arange(abstract_len, device=abstract_ids.device).unsqueeze(0).expand(batch_size, abstract_len))
+        pos_ids_abstract = pos_ids_abstract.clamp(0, self.pos_embedding.num_embeddings - 1)
+
+        abstract_x = self.token_embedding(abstract_ids) + self.pos_embedding(pos_ids_abstract)
+        abstract_mask = attention_mask_abstract == 0
+        abstract_encoded = self.transformer_encoder(abstract_x, src_key_padding_mask=abstract_mask)
+        abstract_encoded = abstract_encoded[:, 0]
+
+        combined = torch.cat([title_encoded, abstract_encoded], dim=1)
+        logits = self.classifier(combined)
         return logits
