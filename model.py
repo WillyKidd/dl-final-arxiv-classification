@@ -12,7 +12,7 @@ class ArxivClassifier(nn.Module):
         num_layers=2,
         dim_ffn=256,
         max_len=1024,
-        dropout=0.1,
+        dropout=0.25,
     ):
         super().__init__()
         self.token_embedding = nn.Embedding(vocab_size, dim_model)
@@ -27,8 +27,11 @@ class ArxivClassifier(nn.Module):
         )
         self.transformer_encoder = nn.TransformerEncoder(encoder_layer, num_layers)
 
-        # Remove the * 2 if you want to go back to joint encodings
-        self.classifier = nn.Linear(dim_model * 2, num_classes)
+        # cross attention for title over abstract
+        self.cross_attention = nn.MultiheadAttention(dim_model, num_heads, dropout=dropout, batch_first=True)
+
+        # need to multiple dim_model by 2 if doing plain separate encodings (w/o cross attention)
+        self.classifier = nn.Linear(dim_model, num_classes)
 
     # If doing joint encoding, change arguments to: self, input_ids, attention_mask
     def forward(self, title_ids, attention_mask_title, abstract_ids, attention_mask_abstract):
@@ -60,7 +63,6 @@ class ArxivClassifier(nn.Module):
         title_x = self.token_embedding(title_ids) + self.pos_embedding(pos_ids_title)
         title_mask = attention_mask_title == 0
         title_encoded = self.transformer_encoder(title_x, src_key_padding_mask=title_mask)
-        title_encoded = title_encoded[:, 0]
 
         # Encoding the abstract
         batch_size, abstract_len = abstract_ids.size()
@@ -70,8 +72,16 @@ class ArxivClassifier(nn.Module):
         abstract_x = self.token_embedding(abstract_ids) + self.pos_embedding(pos_ids_abstract)
         abstract_mask = attention_mask_abstract == 0
         abstract_encoded = self.transformer_encoder(abstract_x, src_key_padding_mask=abstract_mask)
-        abstract_encoded = abstract_encoded[:, 0]
 
-        combined = torch.cat([title_encoded, abstract_encoded], dim=1)
-        logits = self.classifier(combined)
+        # use this for when cross attention is not used
+        # title_encoded = title_encoded[:, 0]
+        # abstract_encoded = abstract_encoded[:, 0]
+        # combined = torch.cat([title_encoded, abstract_encoded], dim=1)
+        # logits = self.classifier(combined)
+
+        # use this for when cross attention is used
+        cross_output, _ = self.cross_attention(title_encoded, abstract_encoded, abstract_encoded, key_padding_mask=abstract_mask)
+        cross_output = cross_output[:, 0]
+        logits = self.classifier(cross_output)
+
         return logits
